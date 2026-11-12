@@ -13,7 +13,7 @@ data class FavoriteSong(
 @Entity(tableName = "playlists")
 data class PlaylistEntity(
     @PrimaryKey(autoGenerate = true)
-    val id : Long,
+    val id : Long = 0,
     val name : String
 )
 
@@ -45,7 +45,7 @@ interface LibraryDao{
     @Query("DELETE FROM favorite_songs WHERE id = :deleteId")
     suspend fun deleteFavorite(deleteId : Long)
     @Query("SELECT *FROM playlists ORDER BY name ASC")
-    suspend fun playlists()
+    suspend fun playlists() : List<PlaylistEntity>
     @Insert
     suspend fun createPlaylists(playlist : PlaylistEntity) : Long
     @Query("DELETE FROM playlists WHERE id = :id")
@@ -57,7 +57,7 @@ interface LibraryDao{
         WHERE playlistId = :playlistId
         ORDER BY position
     """)
-    suspend fun playlistSongs(playlistId : Long) : List<Song>
+    suspend fun playlistSongs(playlistId : Long) : List<Long>
     @Query("""
         DELETE FROM playlist_songs 
         WHERE playlistId = :playlistId AND
